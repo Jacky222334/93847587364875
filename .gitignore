@@ -5,6 +5,9 @@
 outputs_exotic/
 figures/
 
+# Local audit timeline snapshots (do not publish)
+audit/
+
 # LaTeX build artifacts + compiled PDFs
 docs/*.pdf
 docs/*.aux

@@ -12,6 +12,87 @@ DATA_XLSX = os.path.join(
     "MAJOR_T1_NUMERIC_ONLY_SCORES_HADS_FBK_LPFS_ECR_IMPUTED_GENERALKONSENT_J_ONLY.xlsx",
 )
 
+def _cronbach_alpha_listwise(df: pd.DataFrame, cols: list[str]) -> tuple[float, int, int]:
+    """
+    Cronbach's alpha with listwise complete cases.
+    Returns (alpha, n_complete, k_items).
+    """
+    import numpy as np
+
+    if not cols:
+        return float("nan"), 0, 0
+    x = df[cols].apply(pd.to_numeric, errors="coerce")
+    x = x.dropna(axis=0, how="any")
+    n = int(x.shape[0])
+    k = int(x.shape[1])
+    if n == 0 or k < 2:
+        return float("nan"), n, k
+    arr = x.to_numpy(dtype=float)
+    var_items = np.var(arr, axis=0, ddof=1)
+    total = arr.sum(axis=1)
+    var_total = np.var(total, ddof=1)
+    if var_total == 0 or np.isnan(var_total):
+        return float("nan"), n, k
+    alpha = (k / (k - 1)) * (1 - (var_items.sum() / var_total))
+    return float(alpha), n, k
+
+
+def _compute_ecr_rescored_0_4(df: pd.DataFrame) -> tuple[pd.Series | None, pd.Series | None, dict]:
+    """
+    Compute ECR-RD12 anxiety/avoidance subscales (0–4) from item columns.
+
+    Keying used here matches the project's validation file (Validat.md) and yields
+    acceptable internal consistency in this dataset:
+      - anxiety: items 1, 2, 5, 8, 10, 11
+      - avoidance: items 3, 4, 6, 7, 9, 12
+      - reverse-coded items: 3, 4, 9, 12 via (4 - x)
+    """
+    item_cols = {i: f"ECR_RD12_{i}_num_0_4" for i in range(1, 13)}
+    missing = [c for c in item_cols.values() if c not in df.columns]
+    meta: dict = {
+        "ecr_rescore_attempted": True,
+        "ecr_item_cols_missing": missing,
+        "ecr_keying": {
+            "anxiety_items": [1, 2, 5, 8, 10, 11],
+            "avoidance_items": [3, 4, 6, 7, 9, 12],
+            "reverse_items": [3, 4, 9, 12],
+            "reverse_rule": "x_rev = 4 - x",
+            "scale": "0-4",
+        },
+    }
+    if missing:
+        meta["ecr_rescore_used"] = False
+        return None, None, meta
+
+    # Numeric coercion
+    items = {i: pd.to_numeric(df[item_cols[i]], errors="coerce") for i in range(1, 13)}
+    # Reverse-coded items
+    for i in [3, 4, 9, 12]:
+        items[i] = 4 - items[i]
+
+    anx_items = [1, 2, 5, 8, 10, 11]
+    avoid_items = [3, 4, 6, 7, 9, 12]
+    anx = pd.concat([items[i] for i in anx_items], axis=1).mean(axis=1)
+    avoid = pd.concat([items[i] for i in avoid_items], axis=1).mean(axis=1)
+
+    # Reliability (listwise complete on the used item keys)
+    anx_alpha, anx_n, anx_k = _cronbach_alpha_listwise(df.assign(**{f"__ecr_{i}": items[i] for i in anx_items}),
+                                                       [f"__ecr_{i}" for i in anx_items])
+    avoid_alpha, avoid_n, avoid_k = _cronbach_alpha_listwise(df.assign(**{f"__ecr_{i}": items[i] for i in avoid_items}),
+                                                             [f"__ecr_{i}" for i in avoid_items])
+    meta.update({
+        "ecr_rescore_used": True,
+        "ecr_alpha": {
+            "anxiety_alpha": anx_alpha,
+            "anxiety_n_listwise": anx_n,
+            "anxiety_k": anx_k,
+            "avoidance_alpha": avoid_alpha,
+            "avoidance_n_listwise": avoid_n,
+            "avoidance_k": avoid_k,
+        },
+    })
+    return anx, avoid, meta
+
 
 def main():
     ensure_dirs()
@@ -28,8 +109,6 @@ def main():
     # Required columns (minimum)
     required = [
         "PID",
-        "ecr_anxiety_mean_0_4",
-        "ecr_avoidance_mean_0_4",
         "CCI_altersadjustiert",
         "OP_Schweregrad_plus30_Hoechster",
         "oncology_activity_z",
@@ -49,10 +128,22 @@ def main():
         audit["sex_note"] = "Column 'sex_bin' not found; models will omit sex unless user adds it."
 
     # Standardized predictors/covariates
-    if "ecr_anxiety_mean_0_4" in df.columns:
-        df["anx_z"] = zscore(df["ecr_anxiety_mean_0_4"])
-    if "ecr_avoidance_mean_0_4" in df.columns:
-        df["avoid_z"] = zscore(df["ecr_avoidance_mean_0_4"])
+    # Attachment (ECR-RD12): prefer deterministic re-scoring from item columns if available.
+    anx_resc, avoid_resc, ecr_meta = _compute_ecr_rescored_0_4(df)
+    audit.update(ecr_meta)
+    if anx_resc is not None and avoid_resc is not None:
+        df["ecr_anxiety_mean_0_4_rescored"] = anx_resc
+        df["ecr_avoidance_mean_0_4_rescored"] = avoid_resc
+        df["anx_z"] = zscore(df["ecr_anxiety_mean_0_4_rescored"])
+        df["avoid_z"] = zscore(df["ecr_avoidance_mean_0_4_rescored"])
+        audit["ecr_scoring_source"] = "rescored_from_items"
+    else:
+        # Fallback: use precomputed score columns
+        if "ecr_anxiety_mean_0_4" in df.columns:
+            df["anx_z"] = zscore(df["ecr_anxiety_mean_0_4"])
+        if "ecr_avoidance_mean_0_4" in df.columns:
+            df["avoid_z"] = zscore(df["ecr_avoidance_mean_0_4"])
+        audit["ecr_scoring_source"] = "existing_score_columns_fallback"
 
     if "CCI_altersadjustiert" in df.columns:
         df["cci_z"] = zscore(df["CCI_altersadjustiert"])

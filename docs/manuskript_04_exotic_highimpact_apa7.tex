@@ -233,6 +233,28 @@ Several limitations qualify inference. First, the design is cross-sectional and 
 \subsection{Future directions}
 Next steps include prospective replication in larger cohorts, extension to distribution-aware models for raw count outcomes (negative binomial, hurdle, zero-inflated variants), and mechanistic tests of pathway-mediated amplification (e.g., communication dynamics, uncertainty management, reassurance loops). Methodologically, fully Bayesian response-surface models with regularization and out-of-sample validation (e.g., LOO-CV) could quantify incremental value under uncertainty, and multivariate models could examine whether attachment predicts specific PCI\textsuperscript{3} components more strongly than the aggregate index. Finally, intervention studies could test whether structured expectation management or communication scaffolding reduces PUA among patients with high-risk attachment configurations.
 
+\appendix
+\section{Appendix: Analysis code and reproducibility}
+\subsection{Repository link}
+The analysis code used to generate the prepared dataset, model outputs, tables, and figures is available at \url{https://github.com/Jacky222334/93847587364875}. The repository contains the full Python scaffold for preprocessing, modeling, and figure/table generation. No patient-level clinical data are included in the repository.
+
+\subsection{Pipeline overview (Python)}
+The end-to-end workflow is implemented as four deterministic scripts located in \texttt{04\_exotic\_manis/code/}:
+\begin{itemize}
+  \item \texttt{01\_prep.py}: loads the project input spreadsheet, constructs z-standardized predictors/covariates, and computes the PCI\textsuperscript{3} index as the mean of its z-standardized component composites.
+  \item \texttt{02\_models.py}: fits the baseline objective-burden model and the attachment response-surface model (OLS with HC3 robust standard errors), and writes predictions and PUA residuals.
+  \item \texttt{03\_figures.py}: generates the response-surface heatmap, PUA residual scatter plot, and coefficient forest plot.
+  \item \texttt{04\_tables\_and\_snippets.py}: exports descriptives and model tables in manuscript-ready \LaTeX{} tabular format and writes compact result snippets.
+\end{itemize}
+
+All generated artifacts are written to \texttt{04\_exotic\_manis/outputs\_exotic/} (prepared dataset, missingness summaries, model results, tables, and figures). A minimal run sequence is:
+\begin{verbatim}
+python3 04_exotic_manis/code/01_prep.py
+python3 04_exotic_manis/code/02_models.py
+python3 04_exotic_manis/code/03_figures.py
+python3 04_exotic_manis/code/04_tables_and_snippets.py
+\end{verbatim}
+
 \section{Declarations}
 \textbf{Ethics:} Secondary analysis of routinely collected clinical data; ethics approval/waiver and consent procedures: [add]. \\
 \textbf{Data availability:} [add]. \\

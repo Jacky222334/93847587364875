@@ -50,7 +50,8 @@ def main():
     plt.colorbar(im, label="Predicted PCI³ (periop_intensity_index_z)")
     plt.xlabel("Attachment anxiety (anx_z)")
     plt.ylabel("Attachment avoidance (avoid_z)")
-    plt.title("Figure 2. Response surface: predicted PCI³ over anxiety × avoidance\n(covariates held at median)")
+    # Title intentionally avoids hard-coded figure numbers (handled by manuscript captions).
+    plt.title("Response surface: predicted PCI³ over anxiety × avoidance\n(covariates held at median)")
     savefig(os.path.join(fig_dir, "figure2_response_surface_heatmap.png"))
 
     # Figure 3: PUA residual vs attachment insecurity mean
@@ -63,7 +64,7 @@ def main():
         plt.axhline(0, color="black", linewidth=1)
         plt.xlabel("Attachment insecurity (mean of anxiety/avoidance; 0–4)")
         plt.ylabel("PUA residual (observed PCI³ − predicted baseline)")
-        plt.title("Figure 3. Perioperative Utilization Amplification (PUA) vs attachment insecurity")
+        plt.title("Perioperative Utilization Amplification (PUA) vs attachment insecurity")
         savefig(os.path.join(fig_dir, "figure3_pua_residual_scatter.png"))
 
     # Figure 4: Forest plot of standardized-ish coefficients (all predictors are z-scaled except sex)
@@ -80,7 +81,7 @@ def main():
     plt.axvline(0, color="black", linewidth=1)
     plt.yticks(y, terms)
     plt.xlabel("B (unstandardized; outcome is z-scaled)")
-    plt.title("Figure 4. Main model coefficients (HC3; 95% CI)")
+    plt.title("Main model coefficients (HC3; 95% CI)")
     savefig(os.path.join(fig_dir, "figure4_forest_main_model.png"))
 
     print("✓ Figures written to:", fig_dir)
