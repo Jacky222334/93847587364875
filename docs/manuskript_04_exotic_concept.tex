@@ -1,0 +1,125 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{setspace}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage[hidelinks]{hyperref}
+\usepackage{fancyvrb}
+\DeclareUnicodeCharacter{0394}{\ensuremath{\Delta}}
+\DeclareUnicodeCharacter{2248}{\ensuremath{\approx}}
+
+\title{Perioperative Utilization Amplification (PUA)\\\large Attachment--Utilization Amplification in the peri-intake window}
+\author{Internal concept document (04\_exotic\_manis)}
+\date{2025-12-28}
+
+\begin{document}
+\maketitle
+\onehalfspacing
+
+\section{Concept summary}
+\textbf{Core idea:} Define a clinically interpretable construct that goes beyond the standard question ``attachment insecurity $\rightarrow$ more utilization'':
+
+\begin{itemize}
+  \item \textbf{Perioperative Utilization Amplification (PUA):} the excess peri-intake care/intervention intensity beyond what would be expected from objective disease burden and care complexity.
+  \item \textbf{PCI\textsuperscript{3}: Perioperative Care \& Intervention Intensity Index (primary outcome):} a z-scaled composite index combining short-term utilization intensity and intervention proxies.
+\end{itemize}
+
+\section{Variables (real column names)}
+\subsection{Exposure (attachment)}
+\begin{itemize}
+  \item \texttt{ecr\_anxiety\_mean\_0\_4} (0--4)
+  \item \texttt{ecr\_avoidance\_mean\_0\_4} (0--4)
+\end{itemize}
+
+\subsection{Core covariates (objective burden)}
+\begin{itemize}
+  \item \texttt{CCI\_altersadjustiert}
+  \item \texttt{OP\_Schweregrad\_plus30\_Hoechster}
+  \item \texttt{oncology\_activity\_z}
+  \item optional: \texttt{age}, \texttt{sex\_bin} (if available in dataset)
+\end{itemize}
+
+\subsection{PCI\textsuperscript{3} components}
+\begin{itemize}
+  \item \texttt{utilization\_shortterm\_z}
+  \item \texttt{pharmaburden\_z}
+  \item \texttt{pain\_burden\_z}
+  \item \texttt{sedation\_risk\_z}
+  \item optional: \texttt{lab\_postop\_Anzahl} $\rightarrow$ \texttt{lab\_postop\_z}
+\end{itemize}
+
+\section{Operational definitions}
+\subsection{Primary index (PCI\textsuperscript{3})}
+\texttt{periop\_intensity\_index\_z} is computed as the (equal-weighted) mean of the available PCI\textsuperscript{3} components.
+
+\subsection{Amplification (PUA)}
+PUA is implemented as the baseline residual:
+\begin{itemize}
+  \item Baseline model: \texttt{periop\_intensity\_index\_z \textasciitilde cci\_z + opsev\_z + onco\_z (+ age\_z + sex\_bin)}
+  \item \texttt{PUA\_residual = observed - predicted\_baseline}
+\end{itemize}
+
+\section{Statistical design (response surface)}
+Main model (robust OLS HC3 fallback in this environment):
+\begin{verbatim}
+periop_intensity_index_z ~ anx_z + avoid_z + anx_z^2 + anx_z:avoid_z + avoid_z^2
+                           + cci_z + opsev_z + onco_z (+ age_z + sex_bin)
+\end{verbatim}
+
+Surface parameters (report with intervals in the final Bayesian version if desired):
+\[
+a_1=b_1+b_2,\quad a_2=b_3+b_4+b_5,\quad a_3=b_1-b_2,\quad a_4=b_3-b_4+b_5
+\]
+
+\section{Outputs (already generated)}
+All outputs are written to:
+\begin{itemize}
+  \item \texttt{../outputs\_exotic/}
+\end{itemize}
+
+\subsection{Figures}
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.9\textwidth]{../outputs_exotic/figures/figure2_response_surface_heatmap.png}
+  \caption{Response-surface heatmap: predicted PCI\textsuperscript{3} over standardized anxiety $\times$ avoidance (covariates at median).}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.9\textwidth]{../outputs_exotic/figures/figure3_pua_residual_scatter.png}
+  \caption{PUA residual plot: observed PCI\textsuperscript{3} minus predicted baseline (objective burden) vs attachment insecurity (mean of anxiety/avoidance).}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.95\textwidth]{../outputs_exotic/figures/figure4_forest_main_model.png}
+  \caption{Forest plot: main model coefficients (HC3) with 95\% CI.}
+\end{figure}
+
+\clearpage
+\section{Appendix A: Auto-generated captions}
+\VerbatimInput{../outputs_exotic/FIGURE_TABLE_CAPTIONS_exotic.md}
+
+\section{Appendix B: Key tables (CSV dumps)}
+\subsection{Table 1 descriptives}
+\VerbatimInput{../outputs_exotic/tables/table1_descriptives.csv}
+
+\subsection{Table 2 surface parameters}
+\VerbatimInput{../outputs_exotic/tables/table2_surface_params.csv}
+
+\subsection{Table 3 model comparison}
+\VerbatimInput{../outputs_exotic/tables/table3_model_comparison.csv}
+
+\clearpage
+\section{Appendix C: Prompt blocks}
+\subsection{Cursor AI}
+\VerbatimInput{../prompts/cursor_ai_prompt_blocks.md}
+
+\subsection{EUROS AI}
+\VerbatimInput{../prompts/euros_ai_prompt_blocks.md}
+
+\end{document}
+
+

@@ -1,0 +1,29 @@
+# Minimal/public repo ignore rules for 04_exotic_manis
+# Goal: share manuscript + code without data, generated artifacts, or derived outputs.
+
+# Data / derived outputs (do not publish)
+outputs_exotic/
+figures/
+
+# LaTeX build artifacts + compiled PDFs
+docs/*.pdf
+docs/*.aux
+docs/*.bbl
+docs/*.blg
+docs/*.fdb_latexmk
+docs/*.fls
+docs/*.out
+docs/*.fff
+docs/*.ttt
+docs/*.log
+
+# Python caches
+__pycache__/
+*.py[cod]
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+

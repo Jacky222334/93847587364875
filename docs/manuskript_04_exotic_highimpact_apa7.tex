@@ -1,0 +1,253 @@
+\documentclass[man,12pt,a4paper]{apa7}
+
+% --- Formatting ---
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[american]{babel}
+\usepackage{mathptmx} % Times-like
+\usepackage{setspace}
+\doublespacing
+\usepackage{lineno}
+\linenumbers
+
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{threeparttable}
+% apa7 loads hyperref; avoid option clash by not re-loading it here.
+\usepackage{amsmath}
+
+% --- Citations (BibTeX; no biber required) ---
+% NOTE: True APA7 reference formatting typically needs biblatex-apa+biber or apacite.
+% This environment lacks apacite and biber; we therefore use a stable BibTeX style.
+\usepackage{natbib}
+\bibliographystyle{apalike}
+
+% --- Acronyms / Abbreviations (auto-expand on first use) ---
+\usepackage{acro}
+\DeclareAcronym{PUA}{short = PUA, long = Perioperative Utilization Amplification}
+\DeclareAcronym{PCI3}{short = PCI\textsuperscript{3}, long = Perioperative Care \& Intervention Intensity Index}
+\DeclareAcronym{CCI}{short = CCI, long = Charlson Comorbidity Index}
+\DeclareAcronym{ECR}{short = ECR-RD12, long = {Experiences in Close Relationships (Relationship Dynamics), 12-item short form}}
+\DeclareAcronym{RSA}{short = RSA, long = response surface analysis}
+\DeclareAcronym{OLS}{short = OLS, long = ordinary least squares}
+\DeclareAcronym{HC3}{short = HC3, long = heteroskedasticity-consistent (HC3) standard errors}
+\DeclareAcronym{DAG}{short = DAG, long = directed acyclic graph}
+
+\title{Perioperative Utilization Amplification (PUA) in Head and Neck Oncology:\\A Response-Surface Approach to Attachment-Related Excess Care Intensity}
+\shorttitle{PUA and attachment in peri-intake oncology}
+
+\author{Jan Schulze, Sebastian Euler, Roland von Känel}
+\affiliation{Department of Consultation-Liaison Psychiatry and Psychosomatics, University Hospital Zurich, Switzerland}
+
+\authornote{
+Correspondence concerning this article should be addressed to Jan Schulze, Department of Consultation-Liaison Psychiatry and Psychosomatics, University Hospital Zurich, Rämistrasse 100, 8091 Zurich, Switzerland. E-mail: [add].
+}
+
+\abstract{%
+\textbf{Background:} Short-term peri-intake care intensity varies widely in oncology and may reflect more than objective disease burden. We propose \emph{Perioperative Utilization Amplification} (PUA) as the excess care/intervention intensity beyond what would be expected from objective burden and care complexity. We operationalize intensity using a composite index (PCI\textsuperscript{3}) and test whether adult attachment dimensions (anxiety, avoidance) explain incremental variance using a response-surface framework.
+
+\textbf{Methods:} Cross-sectional secondary analysis of routine peri-intake data from a multidisciplinary head and neck oncology center (July 2022--January 2025; \(N=96\)). Peri-intake care/intervention intensity (\ac{PCI3}) was operationalized as the mean of five z-standardized components capturing short-term contact intensity, pharmacotherapy burden, pain-related burden, sedation risk, and postoperative laboratory monitoring intensity. \ac{PUA} was defined as the residual of \ac{PCI3} after a baseline model of objective burden (age-adjusted Charlson Comorbidity Index; surgical severity within +30 days; oncology activity). Attachment anxiety and avoidance were modeled as a response surface (linear, quadratic, interaction terms). Models used OLS with heteroskedasticity-consistent HC3 standard errors.
+
+\textbf{Results:} The objective-burden baseline model explained \(R^2=0.187\) of variance in PCI\textsuperscript{3}. Adding the attachment response surface increased explained variance to \(R^2=0.194\) (\(\Delta R^2=0.0069\)). Surgical severity showed the largest association with PCI\textsuperscript{3} (\(B=0.196\), HC3 SE \(=0.052\)). Attachment anxiety and avoidance showed small, imprecise coefficients (e.g., anxiety: \(B=0.004\), HC3 SE \(=0.130\); avoidance: \(B=0.034\), HC3 SE \(=0.068\)).
+
+\textbf{Conclusions:} PUA provides a clinically interpretable way to separate expected intensity driven by objective burden from excess intensity. In this proof-of-concept sample, objective burden dominated prediction; attachment response-surface terms showed limited incremental explanatory value. Larger prospective datasets are needed to test whether specific anxiety--avoidance configurations (e.g., fearful patterns) predict PUA robustly.
+}
+\keywords{attachment insecurity; healthcare utilization; psycho-oncology; head and neck cancer; response surface analysis; perioperative care}
+
+\begin{document}
+\maketitle
+
+\section{Introduction}
+\subsection{Why peri-intake utilization intensity matters}
+Head and neck oncology is commonly multidisciplinary and time-sensitive, with rapid transitions from intake assessment to treatment decisions. This creates a narrow, high-stakes window in which workload and patient contact density can concentrate. Prior work suggests that psychological factors such as distress, depression, and fear of recurrence can be associated with healthcare utilization in oncology, but mechanisms and effect sizes are heterogeneous \citep{Kirsch2024Emotionaldistressfuture,Bai2021Differenceshealthcareuti,Vachon2020impactfearcancer}.
+
+\subsection{What we know in head and neck oncology: distress, pathways, and utilization}
+Head and neck cancer care is characterized by high symptom burden and complex treatment trajectories, and psychosocial distress is common and time-varying \citep{Vanumu2023Psychosocialdistresstime,Thirupathi2025Psychologicaldistresspat}. At the systems level, mental healthcare utilization in head and neck cancer patients shows longitudinal heterogeneity \citep{Jansen2023Mentalhealthcareutilizat}. Screening and triage frameworks (e.g., distress screening) aim to standardize identification and referral, but implementation details and contact dynamics remain pathway-dependent \citep{Mitchell2021ScreeningAssessmentDistr,LeCouteur2021Briefpsychologicaldistre,Thapa2020PerformanceDistressTherm}.
+
+\subsection{From ``more utilization'' to a clinically interpretable residual}
+Many utilization outcomes in psycho-oncology are difficult to interpret clinically because observed intensity reflects both medical need and pathway amplification. Conceptually, an ``excess'' intensity component becomes actionable if it can be separated from objective burden and treatment complexity, enabling quality-improvement questions (e.g., reassurance loops, coordination effects, or medication pathway inertia).
+
+\subsection{From utilization to \emph{amplification}: defining PUA}
+Many utilization outcomes conflate at least two processes: (a) \emph{expected} intensity driven by objective burden (comorbidity, surgical complexity, oncology activity) and (b) \emph{excess} intensity beyond objective burden, potentially reflecting interpersonal regulation styles, communication dynamics, or pathway effects. To separate these, we define \textbf{Perioperative Utilization Amplification (PUA)} as the residual intensity after accounting for objective burden and care complexity.
+
+\subsection{Attachment insecurity as a candidate driver of excess intensity}
+Attachment theory provides a parsimonious framework for how individuals regulate distress and seek support under threat. In health contexts, attachment anxiety may amplify threat monitoring and reassurance seeking, whereas attachment avoidance may promote minimization and reluctance to engage. Anxiety-related processes are robustly linked to healthcare utilization more broadly \citep{Horenstein2020Anxietydisordershealthca}, and attachment insecurity has been linked to help-seeking tendencies and distress-related outcomes in non-oncologic samples \citep{Arunrasameesopa2021InfluenceAttachmentAnxie,Nagai2020Adultattachmenthelpseeki}.
+
+\subsection{Scope, confirmatory vs exploratory, and contribution}
+We distinguish \textbf{confirmatory} versus \textbf{exploratory} components to reduce interpretive overreach in a proof-of-concept dataset. Confirmatory analyses test whether attachment dimensions (anxiety, avoidance) explain incremental variance in \ac{PCI3} beyond objective burden via an \ac{RSA} specification. Exploratory analyses include secondary outcomes (the \ac{PCI3} components) and descriptive visualization of \ac{PUA} residuals. The conceptual contribution is \ac{PUA} as a clinically interpretable residualization framework to separate expected peri-intake intensity from excess intensity beyond objective burden.
+
+\subsection{Response-surface logic and hypotheses}
+Attachment dimensions may combine nonlinearly: different anxiety--avoidance configurations (e.g., high-high ``fearful'' patterns) could show disproportionate PUA. We therefore used response-surface regression (anxiety, avoidance, squares, and interaction) to test:
+\begin{itemize}
+  \item \textbf{H1:} Attachment insecurity explains incremental variance in peri-intake intensity (PCI\textsuperscript{3}) beyond objective burden.
+  \item \textbf{H2:} Response-surface curvature indicates configuration-specific risk (e.g., highest predicted intensity when both anxiety and avoidance are high).
+\end{itemize}
+
+\subsection{Abbreviations}
+\acresetall
+\begin{description}
+  \item[\ac{PUA}] residual intensity (observed \ac{PCI3} minus baseline objective-burden prediction)
+  \item[\ac{PCI3}] primary peri-intake intensity composite index
+  \item[\ac{CCI}] age-adjusted comorbidity index
+  \item[\ac{RSA}] response-surface regression of anxiety and avoidance (linear, quadratic, interaction)
+  \item[\ac{HC3}] robust standard errors used in the frequentist fallback models
+\end{description}
+
+\section{Methods}
+\subsection{Design and setting}
+We conducted a cross-sectional secondary analysis of routinely collected peri-intake data from an interdisciplinary head and neck oncology program at a university hospital (July 2022--January 2025). The analytic goal was to quantify short-term peri-intake care/intervention intensity and to test whether adult attachment dimensions explain incremental variance beyond objective burden and care complexity.
+
+\subsection{Data sources and governance}
+Patient-reported measures (adult attachment) were collected as part of standard psychosocial intake. Clinical utilization and burden proxies were derived from routine documentation (e.g., consultations, medication records, laboratory monitoring) and were assembled in a project-wide structured dataset. Data were de-identified for analysis; ethics approval/waiver and consent procedures are reported in the Declarations section.
+The analytic extract was restricted to cases with documented general research consent where required by governance procedures.
+
+\subsection{Participants}
+The analytic sample comprised \(N=96\) patients with complete data on the primary intensity index (\ac{PCI3}), adult attachment anxiety/avoidance, and core objective-burden covariates. Inclusion criteria were: (a) routine intake participation within the head and neck oncology program between July~2022 and January~2025, (b) availability of ECR-RD12 attachment scores, (c) availability of the \ac{PCI3} composite and the three objective-burden covariates (age-adjusted \ac{CCI}, surgical severity within +30 days, oncology activity), and (d) documented general research consent where required by governance procedures. Exclusion criteria were missing data on any primary analysis variable.
+
+Patients ranged in age from 23.4 to 95.8 years (\(M=66.6\), \(SD=12.8\)). Tumor site was approximated using malignancy-related ICD-10 codes (C00--C14, C30--C32) contained in an extracted routine documentation field (i.e., a pragmatic proxy rather than a curated primary site variable): oral cavity (C00--C06; \(n=41\)), larynx (C32; \(n=14\)), tonsil/oropharynx (C09--C10; \(n=13\)), hypopharynx (C12--C13; \(n=6\)), nasopharynx (C11; \(n=3\)), other/ill-defined upper aerodigestive sites (C14; \(n=2\)); \(n=16\) cases did not contain a classifiable C-code in the extracted field. Clinical staging information was captured in routine tumor diagnosis documentation (free-text) and frequently contained cTNM elements (cT and cN present in \(n=79\) cases).
+
+Because the core analysis set showed no missingness on primary variables (see Table~1; missingness summary exported during preprocessing), analyses used complete-case estimation without further imputation.
+
+\subsection{Measures and operationalization}
+\subsubsection{Adult attachment}
+Adult attachment was operationalized with the 12-item short form of the Experiences in Close Relationships measure (\ac{ECR}). Subscale scores were computed as mean item scores on a harmonized 0--4 scale and then z-standardized for modeling. Consistent with the project scoring, attachment anxiety used Items 1, 2, 5, 8, 10, and 11, and attachment avoidance used Items 3, 4, 6, 7, 9, and 12; Items 3, 4, 9, and 12 were reverse-coded (\(x_\mathrm{rev} = 4-x\)) prior to scoring. In this sample, internal consistency was acceptable (Cronbach's \(\alpha=.828\) for anxiety and \(\alpha=.756\) for avoidance).
+
+\subsubsection{Objective burden and care complexity (core covariates)}
+We operationalized objective burden/care complexity using three core covariates, all z-standardized: (a) age-adjusted Charlson Comorbidity Index (\texttt{CCI\_altersadjustiert}), derived from ICD-10 codes in the window up to intake date +7 days with standard age-adjustment points; (b) highest surgical severity within +30 days (\texttt{OP\_Schweregrad\_plus30\_Hoechster}; ordinal 0--5); and (c) oncology activity (\texttt{oncology\_activity\_z}), defined as the mean of z(log1p(\texttt{icd\_codes\_plus60\_alle\_c\_Anzahl})), z(log1p(\texttt{tumor\_diagnosen\_plus14\_Anzahl})), and z(log1p(\texttt{tumor\_empfehlungen\_plus14\_Anzahl})).
+
+\subsubsection{Peri-intake care/intervention intensity (\ac{PCI3})}
+Our primary outcome was \ac{PCI3} (\texttt{periop\_intensity\_index\_z}), defined as the mean of five component scores, each z-standardized across the analytic sample (higher values indicate greater intensity/burden):
+\begin{itemize}
+  \item short-term contact intensity (\texttt{utilization\_shortterm\_z}; mean of z(log1p(\texttt{konsultationen\_plus7\_Anzahl})) and z(log1p(\texttt{konsultationen\_plus14\_Anzahl})))
+  \item pharmacotherapy burden (\texttt{pharmaburden\_z}; mean of z(log1p(\texttt{kisim\_medi\_distinct\_atc})) and z(log1p(\texttt{kisim\_medi\_n})))
+  \item pain-related burden (\texttt{pain\_burden\_z}; mean of z(log1p(\texttt{szerf\_postop\_Anzahl})), z(\texttt{schmerz\_meds\_ab\_op\_plus7\_Anzahl}), and z(\texttt{meds\_plus7\_Anzahl\_Opiate}))
+  \item sedation risk (\texttt{sedation\_risk\_z}; mean of z(\texttt{meds\_plus7\_Anzahl\_Benzodiazepin\_ZDerivat}) and z(\texttt{meds\_plus7\_Anzahl\_Opiate}))
+  \item postoperative laboratory monitoring intensity (\texttt{lab\_postop\_z}; z(log1p(\texttt{lab\_postop\_Anzahl})))
+\end{itemize}
+All count-like indicators contributing to component scores were log1p-transformed prior to z-standardization to reduce skewness.
+
+\subsubsection{Perioperative Utilization Amplification (\ac{PUA})}
+We defined \ac{PUA} as the residual intensity beyond objective burden: \(\ac{PUA}_i = \ac{PCI3}_i - \widehat{\ac{PCI3}}_{i,\mathrm{baseline}}\), where \(\widehat{\ac{PCI3}}_{i,\mathrm{baseline}}\) is the baseline-predicted value from objective burden covariates. Positive \ac{PUA} indicates greater-than-expected peri-intake intensity; negative \ac{PUA} indicates lower-than-expected intensity.
+
+\subsection{Statistical analysis}
+\subsubsection{Baseline model (objective burden)}
+We estimated a baseline \ac{OLS} regression predicting \ac{PCI3} from objective burden covariates:
+\[
+\mathrm{PCI}^3 \sim z(\mathrm{CCI}) + z(\mathrm{OP\ severity}) + z(\mathrm{oncology\ activity})
+\]
+Baseline predictions and residuals were retained to compute \ac{PUA}.
+
+\subsubsection{Attachment response-surface model}
+To test configuration-specific attachment effects, we fit a response-surface specification including linear, quadratic, and interaction terms for standardized attachment anxiety (\(A\)) and avoidance (\(V\)), adjusted for the same covariates:
+\[
+\mathrm{PCI}^3 \sim z(A) + z(V) + z(A)^2 + z(A)\,z(V) + z(V)^2 + z(\mathrm{CCI}) + z(\mathrm{OP}) + z(\mathrm{oncology})
+\]
+We used \ac{OLS} with heteroskedasticity-consistent \ac{HC3} standard errors. Surface parameters \(a_1\) through \(a_4\) (slopes/curvatures along the congruence and incongruence lines) were computed as standard linear combinations of the response-surface coefficients.
+
+\subsubsection{Inference, reporting, and sensitivity}
+We report unstandardized coefficients \(B\) (interpretable as SD change in \ac{PCI3} per 1 SD predictor because the outcome is z-scaled), robust SE (HC3), and 95\% confidence intervals; two-sided \(p\) values are reported at \(\alpha=.05\) for completeness but interpretation emphasizes effect sizes and uncertainty given the proof-of-concept nature of the dataset. Incremental explanatory value of attachment beyond objective burden was summarized via \(\Delta R^2\) between the full and baseline models. Secondary outcomes (individual \ac{PCI3} components) and \ac{PUA} visualizations were treated as exploratory.
+
+\subsubsection{Software and reproducibility}
+Data preparation and modeling were implemented in Python (v3.13.9) using deterministic scripts in the project repository (preprocessing: \texttt{04\_exotic\_manis/code/01\_prep.py}; modeling: \texttt{02\_models.py}; tables/figures: \texttt{04\_tables\_and\_snippets.py}, \texttt{03\_figures.py}). Analyses used \texttt{pandas} (v2.3.3) and \texttt{numpy} (v2.2.6); figures used \texttt{matplotlib} (v3.10.8). Computation was performed on an NVIDIA DGX system (128\,GB RAM, 4\,TB storage) accessed via an air-gapped remote environment over SSH from a Mac Pro workstation. Intermediate artifacts (prepared dataset, missingness summaries, model results, and figures) were written to \texttt{04\_exotic\_manis/outputs\_exotic/}.
+
+\section{Results}
+
+\subsection{Sample characteristics}
+\begin{table}[htbp]
+\caption{Sample characteristics and key study variables (\(N=96\))}
+\centering
+\begin{threeparttable}
+\input{../outputs_exotic/tables/table1_descriptives_tabular.tex}
+\begin{tablenotes}[para,flushleft]
+\textit{Note.} CCI = Charlson Comorbidity Index. PCI\textsuperscript{3} is the mean of five z-standardized components: utilization short-term intensity, pharmacotherapy burden, pain-related burden, sedation risk, and postoperative laboratory monitoring intensity.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\subsection{Primary models: baseline vs response surface}
+The objective-burden baseline model explained \(R^2 = 0.187\) of variance in PCI\textsuperscript{3}. The attachment response-surface model explained \(R^2 = 0.194\), corresponding to \(\Delta R^2 = 0.0069\) relative to baseline (Table~\ref{tab:model_comparison}).
+
+In the response-surface model, surgical severity showed the largest association with PCI\textsuperscript{3} (\(B = 0.196\), HC3 SE \(= 0.052\), 95\% CI \([0.095, 0.298]\), \(p < .001\)). In contrast, attachment anxiety and avoidance terms (linear, quadratic, and interaction) were small and statistically imprecise. Response-surface parameterization similarly indicated minimal configuration-specific curvature (Table~\ref{tab:main_model}).
+
+\begin{table}[htbp]
+\caption{Response-surface model for PCI\textsuperscript{3} (HC3 robust SE)}
+\label{tab:main_model}
+\centering
+\begin{threeparttable}
+\input{../outputs_exotic/tables/table2_main_model_tabular.tex}
+\begin{tablenotes}[para,flushleft]
+\textit{Note.} Outcome is z-scaled PCI\textsuperscript{3}. Coefficients are unstandardized \(B\) (interpretable as SD change in PCI\textsuperscript{3} per 1 SD predictor). Two-sided \(p\) values use a normal approximation appropriate for HC3 robust SE; 95\% CI computed as \(B \pm 1.96 \times SE\).
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\begin{table}[htbp]
+\caption{Model comparison (baseline vs attachment response surface)}
+\label{tab:model_comparison}
+\centering
+\begin{threeparttable}
+\input{../outputs_exotic/tables/table3_model_comparison_tabular.tex}
+\begin{tablenotes}[para,flushleft]
+\textit{Note.} \(k\) counts predictors including the intercept. \(\Delta R^2\) is the difference in explained variance between the full and baseline models.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\subsection{PUA and visualization}
+Figure~\ref{fig:surface} displays the fitted response surface, with objective-burden covariates held constant. Figure~\ref{fig:pua} visualizes Perioperative Utilization Amplification (PUA) residuals (observed minus baseline-predicted PCI\textsuperscript{3}) against mean attachment insecurity. Figure~\ref{fig:forest} provides a coefficient forest plot with 95\% robust confidence intervals.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\textwidth]{../outputs_exotic/figures/figure2_response_surface_heatmap.png}
+  \caption{Response surface: predicted PCI\textsuperscript{3} over standardized attachment anxiety and avoidance (objective-burden covariates held at median).}
+  \label{fig:surface}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\textwidth]{../outputs_exotic/figures/figure3_pua_residual_scatter.png}
+  \caption{Perioperative Utilization Amplification (PUA) residual (observed PCI\textsuperscript{3} minus baseline objective-burden prediction) plotted against mean attachment insecurity (mean of anxiety and avoidance).}
+  \label{fig:pua}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\textwidth]{../outputs_exotic/figures/figure4_forest_main_model.png}
+  \caption{Forest plot of response-surface model coefficients with 95\% CI (HC3).}
+  \label{fig:forest}
+\end{figure}
+
+\section{Discussion}
+\subsection{Principal findings}
+We introduced Perioperative Utilization Amplification (PUA) as a residualized construct to disentangle expected perioperative care intensity (driven by objective burden) from excess intensity beyond medical need proxies. In this proof-of-concept sample, objective-burden covariates---particularly surgical severity---were the dominant predictors of early perioperative intensity (PCI\textsuperscript{3}). Attachment insecurity, modeled via a response-surface specification capturing linear, quadratic, and interaction effects of anxiety and avoidance, contributed little incremental explanatory value (\(\Delta R^2 \approx 0.007\)), and response-surface parameters suggested minimal configuration-specific curvature.
+
+\subsection{Interpretation}
+These results suggest an important boundary condition: within a short, high-stakes perioperative window where medical complexity is high and care processes are protocolized, objective burden may dominate intensity signals, leaving limited variance for interpersonal-regulation traits to explain. This does not imply that attachment processes are irrelevant to care; rather, their influence may be (a) indirect (e.g., via distress dynamics, communication loops, or reassurance seeking), (b) outcome-specific (e.g., affecting contact frequency more than medication patterns), or (c) temporally displaced (e.g., emerging more clearly in longer-term survivorship and follow-up utilization). Aggregating multiple intensity domains into PCI\textsuperscript{3} may further attenuate domain-specific psychosocial effects if attachment relates strongly to only one component.
+
+\subsection{Clinical and systems implications}
+PUA is clinically attractive because it aligns with real-world decision-making: it evaluates whether observed utilization intensity is commensurate with objective burden. Even if attachment effects on overall PCI\textsuperscript{3} are small, PUA can support targeted quality-improvement questions---such as pathway design, expectation management, structured reassurance, and care coordination---while reducing the risk of misinterpreting high contact volume as purely medical need. In applied settings, PUA could be used as a screening signal for chart review or targeted supportive interventions, especially when high residual intensity persists despite stable objective burden.
+
+\subsection{Limitations}
+Several limitations qualify inference. First, the design is cross-sectional and single-center, limiting causal interpretation and generalizability. Second, the sample size is modest relative to the parameterization of response surfaces, which increases uncertainty for nonlinear terms and configuration-specific inferences. Third, PCI\textsuperscript{3} relies on composite proxies derived from routine documentation, including medication-based burden indicators that may reflect prescribing practices as well as patient factors. Fourth, unmeasured confounding (e.g., baseline distress, socioeconomic constraints, clinician-level pathway differences) could obscure small psychosocial effects.
+
+\subsection{Future directions}
+Next steps include prospective replication in larger cohorts, extension to distribution-aware models for raw count outcomes (negative binomial, hurdle, zero-inflated variants), and mechanistic tests of pathway-mediated amplification (e.g., communication dynamics, uncertainty management, reassurance loops). Methodologically, fully Bayesian response-surface models with regularization and out-of-sample validation (e.g., LOO-CV) could quantify incremental value under uncertainty, and multivariate models could examine whether attachment predicts specific PCI\textsuperscript{3} components more strongly than the aggregate index. Finally, intervention studies could test whether structured expectation management or communication scaffolding reduces PUA among patients with high-risk attachment configurations.
+
+\section{Declarations}
+\textbf{Ethics:} Secondary analysis of routinely collected clinical data; ethics approval/waiver and consent procedures: [add]. \\
+\textbf{Data availability:} [add]. \\
+\textbf{Code availability:} [add]. \\
+\textbf{Funding:} [add]. \\
+\textbf{Conflicts of interest:} [add]. \\
+\textbf{Author contributions:} [add]. \\
+
+% NOTE: To ensure the bibliography contains the full curated 45-item set (>=2020),
+% we include all entries from the selected .bib file. For journal submission,
+% consider replacing this with explicit in-text citations only.
+\nocite{*}
+
+\bibliography{manuskript_04_refs_selected45_2020plus}
+
+\end{document}
+
+
