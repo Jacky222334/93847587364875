@@ -36,7 +36,7 @@ def _design(df: pd.DataFrame, cols):
 
 def main():
     ensure_dirs()
-    in_csv = os.path.join(OUT_DIR, "prepared_exotic_dataset.csv")
+    in_csv = os.path.join(OUT_DIR, "prepared_pua_dataset.csv")
     df = pd.read_csv(in_csv)
 
     # core covariates (use what's available)

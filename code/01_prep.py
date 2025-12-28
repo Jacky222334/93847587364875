@@ -171,7 +171,7 @@ def main():
     df["periop_intensity_index_z"] = df[components].mean(axis=1, skipna=False)
 
     # Save prepared dataset
-    out_csv = os.path.join(OUT_DIR, "prepared_exotic_dataset.csv")
+    out_csv = os.path.join(OUT_DIR, "prepared_pua_dataset.csv")
     df.to_csv(out_csv, index=False)
     audit["output_csv"] = out_csv
 

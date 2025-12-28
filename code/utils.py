@@ -8,7 +8,7 @@ import pandas as pd
 
 ROOT = "/home/jbs123/Dokumente/intake"
 BASE_DIR = os.path.join(ROOT, "04_exotic_manis")
-OUT_DIR = os.path.join(BASE_DIR, "outputs_exotic")
+OUT_DIR = os.path.join(BASE_DIR, "outputs_pua")
 
 
 def ensure_dirs():

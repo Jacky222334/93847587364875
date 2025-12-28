@@ -44,7 +44,7 @@ def _write_tex(path: str, text: str):
 def main():
     ensure_dirs()
 
-    df = pd.read_csv(os.path.join(OUT_DIR, "prepared_exotic_dataset.csv"))
+    df = pd.read_csv(os.path.join(OUT_DIR, "prepared_pua_dataset.csv"))
     # model_results.json is a nested dict; use plain json loader (pandas may error on nested dicts)
     with open(os.path.join(OUT_DIR, "model_results.json"), "r", encoding="utf-8") as f:
         model_res = json.load(f)
@@ -239,7 +239,7 @@ def main():
 
     # Captions / blueprint
     write_md(
-        os.path.join(OUT_DIR, "FIGURE_TABLE_CAPTIONS_exotic.md"),
+        os.path.join(OUT_DIR, "FIGURE_TABLE_CAPTIONS_pua.md"),
         f"""## Captions (exotic manuscript) — generated {now_iso()}
 
 ### Tables

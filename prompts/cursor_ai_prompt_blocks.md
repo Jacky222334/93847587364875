@@ -15,7 +15,7 @@ REQUIRED VARIABLES (minimum):
 - Outcomes/components: `utilization_shortterm_z`, `pharmaburden_z`, `pain_burden_z`, `sedation_risk_z`
 - Optional: `lab_postop_Anzahl` (if present)
 
-TASKS (implement exactly; write outputs into `04_exotic_manis/outputs_exotic/`):
+TASKS (implement exactly; write outputs into `04_exotic_manis/outputs_pua/`):
 
 (1) DATA AUDIT & PREP
 - Check columns, types, missingness; create a data dictionary.

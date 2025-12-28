@@ -2,7 +2,7 @@
 # Goal: share manuscript + code without data, generated artifacts, or derived outputs.
 
 # Data / derived outputs (do not publish)
-outputs_exotic/
+outputs_pua/
 figures/
 
 # Local audit timeline snapshots (do not publish)

@@ -157,7 +157,7 @@ Data preparation and modeling were implemented in Python (v3.13.9) using determi
 \caption{Sample characteristics and key study variables (\(N=96\))}
 \centering
 \begin{threeparttable}
-\input{../outputs_exotic/tables/table1_descriptives_tabular.tex}
+\input{../outputs_pua/tables/table1_descriptives_tabular.tex}
 \begin{tablenotes}[para,flushleft]
 \textit{Note.} CCI = Charlson Comorbidity Index. PCI\textsuperscript{3} is the mean of five z-standardized components: utilization short-term intensity, pharmacotherapy burden, pain-related burden, sedation risk, and postoperative laboratory monitoring intensity.
 \end{tablenotes}
@@ -174,7 +174,7 @@ In the response-surface model, surgical severity showed the largest association 
 \label{tab:main_model}
 \centering
 \begin{threeparttable}
-\input{../outputs_exotic/tables/table2_main_model_tabular.tex}
+\input{../outputs_pua/tables/table2_main_model_tabular.tex}
 \begin{tablenotes}[para,flushleft]
 \textit{Note.} Outcome is z-scaled PCI\textsuperscript{3}. Coefficients are unstandardized \(B\) (interpretable as SD change in PCI\textsuperscript{3} per 1 SD predictor). Two-sided \(p\) values use a normal approximation appropriate for HC3 robust SE; 95\% CI computed as \(B \pm 1.96 \times SE\).
 \end{tablenotes}
@@ -186,7 +186,7 @@ In the response-surface model, surgical severity showed the largest association 
 \label{tab:model_comparison}
 \centering
 \begin{threeparttable}
-\input{../outputs_exotic/tables/table3_model_comparison_tabular.tex}
+\input{../outputs_pua/tables/table3_model_comparison_tabular.tex}
 \begin{tablenotes}[para,flushleft]
 \textit{Note.} \(k\) counts predictors including the intercept. \(\Delta R^2\) is the difference in explained variance between the full and baseline models.
 \end{tablenotes}
@@ -198,21 +198,21 @@ Figure~\ref{fig:surface} displays the fitted response surface, with objective-bu
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=\textwidth]{../outputs_exotic/figures/figure2_response_surface_heatmap.png}
+  \includegraphics[width=\textwidth]{../outputs_pua/figures/figure2_response_surface_heatmap.png}
   \caption{Response surface: predicted PCI\textsuperscript{3} over standardized attachment anxiety and avoidance (objective-burden covariates held at median).}
   \label{fig:surface}
 \end{figure}
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=\textwidth]{../outputs_exotic/figures/figure3_pua_residual_scatter.png}
+  \includegraphics[width=\textwidth]{../outputs_pua/figures/figure3_pua_residual_scatter.png}
   \caption{Perioperative Utilization Amplification (PUA) residual (observed PCI\textsuperscript{3} minus baseline objective-burden prediction) plotted against mean attachment insecurity (mean of anxiety and avoidance).}
   \label{fig:pua}
 \end{figure}
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=\textwidth]{../outputs_exotic/figures/figure4_forest_main_model.png}
+  \includegraphics[width=\textwidth]{../outputs_pua/figures/figure4_forest_main_model.png}
   \caption{Forest plot of response-surface model coefficients with 95\% CI (HC3).}
   \label{fig:forest}
 \end{figure}

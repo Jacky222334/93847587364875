@@ -58,7 +58,7 @@ git bundle create "$OUT_DIR/repo.bundle" --all
 } > "$OUT_DIR/manifest.txt"
 
 # Optional compiled PDF (kept local; ignored by .gitignore)
-PDF_PATH="$REPO_ROOT/docs/manuskript_04_exotic_highimpact_apa7.pdf"
+PDF_PATH="$REPO_ROOT/docs/manuskript_04_pua_highimpact_apa7.pdf"
 if [[ "$INCLUDE_PDF" -eq 1 && -f "$PDF_PATH" ]]; then
   cp -a "$PDF_PATH" "$OUT_DIR/"
   echo "included_pdf=$(basename "$PDF_PATH")" >> "$OUT_DIR/manifest.txt"

@@ -2,11 +2,11 @@
 
 This folder contains a publishable “exotic” paper concept and a reproducible analysis scaffold:
 
-- `docs/manuskript_04_exotic_concept.md`: the paper concept (PUA / PCI³), hypotheses, variable definitions (with real variable names), analysis pipeline, figure/table blueprints, and ready-to-use result text templates.
+- `docs/manuskript_04_pua_concept.md`: the paper concept (PUA / PCI³), hypotheses, variable definitions (with real variable names), analysis pipeline, figure/table blueprints, and ready-to-use result text templates.
 - `prompts/cursor_ai_prompt_blocks.md`: copy/paste-ready prompt blocks for Cursor AI.
 - `prompts/euros_ai_prompt_blocks.md`: copy/paste-ready prompt blocks for “EUROS AI” (medical writing).
-- `code/`: reproducible scripts (prep/models/figures/tables) that write to `outputs_exotic/`.
-- `outputs_exotic/`: generated tables, figures, and text snippets.
+- `code/`: reproducible scripts (prep/models/figures/tables) that write to `outputs_pua/`.
+- `outputs_pua/`: generated tables, figures, and text snippets.
 
 ## Primary dataset
 Expected input (adjust if you prefer a different file):
